@@ -1,7 +1,9 @@
 'use strict';
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const PricingRules = require('./controllers/pricing-rules');
+app.use(bodyParser.json());
 app.listen(8081, function () {
   console.log("\x1b[32m");
   console.log(" _____ _             _           _    ____  _  __");
@@ -13,13 +15,13 @@ app.listen(8081, function () {
   console.log("\x1b[0m");
   console.log("Architect app started OK");
 });
-app.get('/calculate', function (req, res) {
-  let pricingRules = new PricingRules(req.query.customer);
-  let items = req.query.skus.split(',');
+app.post('/calculate', function (req, res) {
+  console.log('/calculate');
+  let pricingRules = new PricingRules(req.body.customer);
+  let items = req.body.skus;
   items.forEach(function (item) {
     pricingRules.add(item);
   });
   let total = pricingRules.total();
-  console.log(total);
   res.send(total);
 });
