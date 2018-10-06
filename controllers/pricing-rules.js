@@ -1,5 +1,7 @@
 'use strict';
 const Advertisement = require('./../models/advertisement-model');
+const Rules = require('./../controllers/rules');
+const rules = new Rules();
 module.exports = function (customer) {
   customer = typeof customer !== 'undefined' ? customer : 'default';
   customer = customer.charAt(0).toUpperCase()+customer.slice(1);
@@ -34,56 +36,27 @@ module.exports = function (customer) {
       switch (customer.toLowerCase()) {
         // pricing rules for `unilever`.
         case 'unilever': {
-          let countClassic = confirmedItems.filter(function (item) {
-            return item.id.toLowerCase() === 'classic'
-          }).length;
-          let afterCountClassic = parseInt(countClassic / 3);
-          let tempItems = [];
-          confirmedItems.forEach(function (item) {
-            tempItems.push(item);
-          });
-          if (tempItems.length > 0) {
-            for (var i = tempItems.length - 1; i--;) {
-              if (tempItems[i].id === 'classic' && afterCountClassic > 0) {
-                tempItems.splice(i, 1);
-                afterCountClassic--;
-              }
-            }
-          }
-          tempItems.forEach(function (item) {
-            total += item.normalPrice;
-          });
+          total = rules.getUnilever(confirmedItems);
         }
         break;
         // pricing rules for `apple`.
         case 'apple': {
-          confirmedItems.forEach(function (item) {
-            total += (item.id.toLowerCase() === 'standout' ?
-              item.options.applePrice : item.normalPrice);
-          });
+          total = rules.getApple(confirmedItems);
         }
         break;
         // pricing rules for `nike`.
         case 'nike': {
-          let countPremium = confirmedItems.filter(function (item) {
-            return item.id.toLowerCase() === 'premium'
-          }).length;
-          confirmedItems.forEach(function (item) {
-            total += (item.id.toLowerCase() === 'premium' && countPremium >= 4 ?
-              item.options.nikePrice : item.normalPrice);
-          });
+          total = rules.getNike(confirmedItems);
         }
         break;
         // pricing rules for `ford`.
         case 'ford': {
-          
+          total = rules.getFord(confirmedItems);
         }
         break;
         case 'default':
         default: {
-          confirmedItems.forEach(function (item) {
-            total += item.normalPrice;
-          });
+          total = rules.getDefault(confirmedItems);
         }
       }
     }
