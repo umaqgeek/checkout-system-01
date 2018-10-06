@@ -1,7 +1,8 @@
 'use strict';
 const Advertisement = require('./../models/advertisement-model');
 module.exports = function (customer) {
-  this.customer = typeof customer !== 'undefined' ? customer : 'default';
+  customer = typeof customer !== 'undefined' ? customer : 'default';
+  customer = customer.charAt(0).toUpperCase()+customer.slice(1);
   let items = []; // array of items.
   let confirmedItems = []; // array of items that has been filtered.
   // function to add items into cart.
@@ -20,10 +21,71 @@ module.exports = function (customer) {
           return item.toLowerCase() === ad.id.toLowerCase();
         });
         if (adArr.length > 0) {
-          confirmedItems.push({priority: adArr[0].priority, 'name': item});
+          confirmedItems.push({
+            'priority': adArr[0].priority,
+            'id': adArr[0].id,
+            'name': item.charAt(0).toUpperCase() + item.slice(1),
+            'normalPrice': adArr[0].normalPrice,
+            'options': adArr[0].options
+          });
         }
       });
-      // next ...
+      // apply pricing rules.
+      switch (customer.toLowerCase()) {
+        // pricing rules for `unilever`.
+        case 'unilever': {
+          let countClassic = confirmedItems.filter(function (item) {
+            return item.id.toLowerCase() === 'classic'
+          }).length;
+          let afterCountClassic = parseInt(countClassic / 3);
+          let tempItems = [];
+          confirmedItems.forEach(function (item) {
+            tempItems.push(item);
+          });
+          if (tempItems.length > 0) {
+            for (var i = tempItems.length - 1; i--;) {
+              if (tempItems[i].id === 'classic' && afterCountClassic > 0) {
+                tempItems.splice(i, 1);
+                afterCountClassic--;
+              }
+            }
+          }
+          tempItems.forEach(function (item) {
+            total += item.normalPrice;
+          });
+        }
+        break;
+        // pricing rules for `apple`.
+        case 'apple': {
+          confirmedItems.forEach(function (item) {
+            total += (item.id.toLowerCase() === 'standout' ?
+              item.options.applePrice : item.normalPrice);
+          });
+        }
+        break;
+        // pricing rules for `nike`.
+        case 'nike': {
+          let countPremium = confirmedItems.filter(function (item) {
+            return item.id.toLowerCase() === 'premium'
+          }).length;
+          confirmedItems.forEach(function (item) {
+            total += (item.id.toLowerCase() === 'premium' && countPremium >= 4 ?
+              item.options.nikePrice : item.normalPrice);
+          });
+        }
+        break;
+        // pricing rules for `ford`.
+        case 'ford': {
+          
+        }
+        break;
+        case 'default':
+        default: {
+          confirmedItems.forEach(function (item) {
+            total += item.normalPrice;
+          });
+        }
+      }
     }
     // trim text of SKUs.
     let skusScanned = '';
@@ -31,7 +93,7 @@ module.exports = function (customer) {
     confirmedItems.forEach(function (item, index, confirmedItems) {
       skusScanned += '`'+item.name+'`';
       if (index !== confirmedItems.length - 1) {
-        skusScanned += ',';
+        skusScanned += ', ';
       }
     });
     // return show text and results.
