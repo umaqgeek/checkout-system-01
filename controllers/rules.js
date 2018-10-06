@@ -1,22 +1,5 @@
 'use strict';
 module.exports = function() {
-  // promotion for unilever.
-  this.unilever = ['Gets a <strong>“3 for 2” deal on Classic Ads</strong>.'];
-  // promotion for apple.
-  this.apple = ['Gets a discount on <strong>Standout Ads where the price '+
-    'drops to $299.99 per ad</strong>.'];
-  // promotion for nike.
-  this.nike = ['Gets a discount on <strong>Premium Ads where 4 or more'+
-    '</strong> are purchased. The price drops to <strong>$379.99 per ad'+
-    '</strong>.'];
-  // promotion for ford.
-  this.ford = [
-    'Gets a <strong>“5 for 4” deal on Classic Ads</strong>.',
-    'Gets a discount on <strong>Standout Ads where the price drops to $309.99'+
-      ' per ad</strong>.',
-    'Gets a discount on <strong>Premium Ads when 3 or more</strong> are '+
-      'purchased. The price drops to <strong>$389.99 per ad</strong>.'
-  ];
   // pricing rule for unilever.
   this.getUnilever = function (confirmedItems) {
     let total = 0;

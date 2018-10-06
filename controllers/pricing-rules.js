@@ -3,6 +3,7 @@ const Advertisement = require('./../models/advertisement-model');
 const Rules = require('./../controllers/rules');
 const rules = new Rules();
 module.exports = function (customer) {
+  console.log(customer);
   customer = typeof customer !== 'undefined' ? customer : 'default';
   customer = customer.charAt(0).toUpperCase()+customer.slice(1);
   let items = []; // array of items.
