@@ -1,11 +1,14 @@
 'use strict';
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const PricingRules = require('./controllers/pricing-rules');
 const Advertisements = require('./models/advertisement-model');
 const Customers = require('./models/customer-model');
+
 app.use(bodyParser.json());
+
 app.use(function (req, res, next) {
   // Websites to allow to connect
   let allowedOrigins = [
@@ -26,6 +29,7 @@ app.use(function (req, res, next) {
   // Pass to next layer of middleware
   next();
 });
+
 // app start at port 8081.
 app.listen(8081, function () {
   console.log("\x1b[32m");
@@ -38,9 +42,10 @@ app.listen(8081, function () {
   console.log("\x1b[0m");
   console.log("Architect app started OK");
 });
+
 // REST API /calculate.
 app.post('/calculate', function (req, res) {
-  console.log('/calculate');
+  console.log('GET /calculate');
   let customer = typeof req.body.customer !== 'undefined' ? req.body.customer :
     'default';
   let pricingRules = new PricingRules(customer);
@@ -52,6 +57,7 @@ app.post('/calculate', function (req, res) {
   let total = pricingRules.total();
   res.send(total);
 });
+
 // REST API /advertisements.
 app.get('/advertisements', function (req, res) {
   console.log('/advertisements');
@@ -68,6 +74,7 @@ app.get('/advertisements', function (req, res) {
   }
   res.send(outData);
 });
+
 // REST API /customers.
 app.get('/customers', function (req, res) {
   console.log('/customers');
@@ -84,3 +91,5 @@ app.get('/customers', function (req, res) {
   }
   res.send(outData);
 });
+
+module.exports = app;
