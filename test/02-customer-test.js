@@ -4,6 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../index');
 const should = chai.should();
+const expect = require("chai").expect;
 
 chai.use(chaiHttp);
 
@@ -12,14 +13,12 @@ describe('/GET customers', () => {
 
     chai.request(server).get('/customers').end((err, res) => {
 
-      res.should.have.status(200);
-      res.body.should.be.a('array');
-      res.body.length.should.not.eql(0);
+      expect(res.body).to.be.a('array');
+      expect(res.body[0]).to.be.a('object');
+      expect(res.body).not.equal(0);
+      expect(res).to.have.status(200);
+
       done();
-
-      return;
-
     });
-
   });
 });
