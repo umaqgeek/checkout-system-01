@@ -17,6 +17,8 @@ describe('/GET customers', () => {
       res.body.length.should.not.eql(0);
       done();
 
+      return;
+
     });
 
   });

@@ -1,5 +1,7 @@
 'use strict';
+
 module.exports = function () {
+
   this.data = [
     // promotion for default.
     {
