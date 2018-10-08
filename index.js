@@ -13,7 +13,8 @@ app.use(function (req, res, next) {
   // Websites to allow to connect
   let allowedOrigins = [
     'http://127.0.0.1:8080',
-    'http://localhost:8080'
+    'http://localhost:8080',
+    'https://sja-checkout-system.firebaseapp.com'
   ];
   let origin = req.headers.origin;
   if (allowedOrigins.indexOf(origin) > -1) {
